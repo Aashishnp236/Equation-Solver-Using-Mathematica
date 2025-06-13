@@ -1,0 +1,114 @@
+Notebook[{Cell[
+CellGroupData[{Cell[
+BoxData[RowBox[{RowBox[{"DynamicModule","[","\n"," ",RowBox[
+{RowBox[{"{",RowBox[{RowBox[{"eqn"," ","="," ","\"\""}],","," ",RowBox[{"vars"," ","="," ","\"x\""}],","," ",RowBox[
+{"sol"," ","="," ","\"\""}],","," ",RowBox[{"orderInfo"," ","="," ","\"\""}],","," ","\n","  ",RowBox[
+{"useReduce"," ","="," ","False"}],","," ",RowBox[{"solveType"," ","="," ","\"Symbolic\""}],","," ","\n","  ",RowBox[
+{"showSteps"," ","="," ","False"}],","," ",RowBox[{"plotToggle"," ","="," ","False"}]}],"}"}],",","\n","\n"," ",RowBox[
+{"(*"," ",RowBox[{"Helper"," ","function"," ","to"," ","detect"," ","order"," ","of"," ","equation",RowBox[
+{"(","s",")"}]}]," ","*)"}],"\n"," ",RowBox[{RowBox[{RowBox[{"getEquationOrder","[",RowBox[
+{"e_List",","," ","v_List"}],"]"}]," ",":="," ",RowBox[{"Module","[",RowBox[{RowBox[
+{"{","orders","}"}],",","\n","   ",RowBox[{RowBox[{"orders"," ","="," ",RowBox[{"Table","[","\n","     ",RowBox[
+{RowBox[{"Which","[","\n","       ",RowBox[{RowBox[{"PolynomialQ","[",RowBox[{RowBox[
+{"e","[",RowBox[{"[","i","]"}],"]"}],","," ","v"}],"]"}],",","\n","         ",RowBox[
+{"\"Polynomial Order: \""," ","<>"," ","\n","         ",RowBox[{"ToString","[",RowBox[
+{"Exponent","[",RowBox[{RowBox[{"e","[",RowBox[{"[","i","]"}],"]"}],","," ","v"}],"]"}],"]"}]}],",","\n","       ","True",",","\n","         ","\"Non-polynomial or mixed equation\""}],"\n","     ","]"}],",","\n","     ",RowBox[
+{"{",RowBox[{"i",","," ",RowBox[{"Length","[","e","]"}]}],"}"}]}],"\n","   ","]"}]}],";","\n","   ",RowBox[
+{"StringJoin","@","\n","     ",RowBox[{"Riffle","[","\n","       ",RowBox[{RowBox[
+{"Table","[",RowBox[{RowBox[{"\"Eq\""," ","<>"," ",RowBox[{"ToString","[","i","]"}]," ","<>"," ","\": \""," ","<>"," ",RowBox[
+{"orders","[",RowBox[{"[","i","]"}],"]"}]}],","," ",RowBox[{"{",RowBox[{"i",","," ",RowBox[
+{"Length","[","orders","]"}]}],"}"}]}],"]"}],",","\n","       ","\"\\n\""}],"\n","     ","]"}]}]}]}],"\n"," ","]"}]}],";","\n","\n"," ",RowBox[
+{"Column","[",RowBox[{"{","\n","   ",RowBox[{RowBox[{"Style","[",RowBox[{"\"\|01f4d0 Aashish Tharu Gamuwa Ultimate Equation Solver\"",","," ","Bold",","," ","16",","," ","Blue"}],"]"}],",","\n","\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]",RowBox[
+{"Style","[",RowBox[{"\"Department of Sciences Quantum University Roorkee, Uttarakhand, India\"",","," ","Bold",","," ","16",","," ","Blue"}],"]"}],",","\n","   ","\n","   ",RowBox[
+{"Row","[",RowBox[{"{","\n","     ",RowBox[{"\"Equation(s): \"",",","\n","     ",RowBox[
+{"InputField","[",RowBox[{RowBox[{"Dynamic","[","eqn","]"}],","," ","String",","," ","\n","       ",RowBox[
+{"FieldHint"," ","\[Rule]"," ","\"e.g. x^2 + y == 1, x - y == 0\""}],","," ",RowBox[
+{"ImageSize"," ","\[Rule]"," ","400"}]}],"]"}]}],"\n","   ","}"}],"]"}],",","\n","   ","\n","   ",RowBox[
+{"Row","[",RowBox[{"{","\n","     ",RowBox[{"\"Variable(s) to solve for: \"",",","\n","     ",RowBox[
+{"InputField","[",RowBox[{RowBox[{"Dynamic","[","vars","]"}],","," ","String",","," ","\n","       ",RowBox[
+{"FieldHint"," ","\[Rule]"," ","\"e.g. x or {x, y}\""}],","," ",RowBox[{"ImageSize"," ","\[Rule]"," ","200"}]}],"]"}]}],"\n","   ","}"}],"]"}],",","\n","   ","\n","   ",RowBox[
+{"Row","[",RowBox[{"{","\n","     ",RowBox[{RowBox[{"Checkbox","[",RowBox[{"Dynamic","[","useReduce","]"}],"]"}],","," ","\" Use Reduce\"",",","\n","     ",RowBox[
+{"Spacer","[","20","]"}],",","\n","     ",RowBox[{"PopupMenu","[",RowBox[{RowBox[
+{"Dynamic","[","solveType","]"}],","," ",RowBox[{"{",RowBox[{"\"Symbolic\"",","," ","\"Numeric\""}],"}"}]}],"]"}],",","\n","     ",RowBox[
+{"Spacer","[","20","]"}],",","\n","     ",RowBox[{"Checkbox","[",RowBox[{"Dynamic","[","showSteps","]"}],"]"}],","," ","\" Show Steps (symbolic only)\"",",","\n","     ",RowBox[
+{"Spacer","[","20","]"}],",","\n","     ",RowBox[{"Checkbox","[",RowBox[{"Dynamic","[","plotToggle","]"}],"]"}],","," ","\" Plot (1-var only)\""}],"\n","   ","}"}],"]"}],",","\n","   ","\n","   ",RowBox[
+{"Row","[",RowBox[{"{","\n","     ",RowBox[{RowBox[{"Button","[",RowBox[{"\"Solve\"",",","\n","       ",RowBox[
+{"sol"," ","="," ",RowBox[{"Quiet","@",RowBox[{"Check","[","\n","         ",RowBox[
+{RowBox[{"Module","[",RowBox[{RowBox[{"{",RowBox[{"parsedEqn",","," ","parsedVars"}],"}"}],",","\n","           ",RowBox[
+{RowBox[{"parsedEqn"," ","="," ",RowBox[{"ToExpression","[",RowBox[{"\"{\""," ","<>"," ","eqn"," ","<>"," ","\"}\""}],"]"}]}],";","\n","           ",RowBox[
+{"parsedVars"," ","="," ",RowBox[{"ToExpression","[","vars","]"}]}],";","\n","\n","           ",RowBox[
+{"(*"," ",RowBox[{"Get"," ","and"," ","display"," ","equation"," ","order"}]," ","*)"}],"\n","           ",RowBox[
+{"orderInfo"," ","="," ",RowBox[{"getEquationOrder","[","\n","             ",RowBox[
+{RowBox[{"(",RowBox[{"Subtract"," ","@@@"," ","parsedEqn"}],")"}],","," ",RowBox[
+{"Flatten","[",RowBox[{"{","parsedVars","}"}],"]"}]}],"\n","           ","]"}]}],";","\n","           ","\n","           ",RowBox[
+{"(*"," ",RowBox[{"Solve"," ","logic"}]," ","*)"}],"\n","           ",RowBox[{"If","[",RowBox[
+{RowBox[{"solveType"," ","==="," ","\"Symbolic\""}],",","\n","             ",RowBox[
+{"If","[",RowBox[{"useReduce",",","\n","               ",RowBox[{"ToString","[",RowBox[
+{"Reduce","[",RowBox[{"parsedEqn",","," ","parsedVars"}],"]"}],"]"}],",","\n","               ",RowBox[
+{"If","[",RowBox[{RowBox[{"showSteps"," ","&&"," ",RowBox[{"VectorQ","[",RowBox[{"parsedVars",","," ","AtomQ"}],"]"}]," ","&&"," ",RowBox[
+{RowBox[{"Length","[","parsedVars","]"}]," ","=="," ","1"}]}],",","\n","                 ",RowBox[
+{"ToString","[","\n","                   ",RowBox[{"Column","@",RowBox[{"{","\n","                     ",RowBox[
+{"\"Step-by-step simplification:\"",",","\n","                     ",RowBox[{"FullSimplify","[",RowBox[
+{RowBox[{"parsedEqn","[",RowBox[{"[","1","]"}],"]"}]," ","=="," ",RowBox[{"parsedEqn","[",RowBox[
+{"[","2","]"}],"]"}]}],"]"}]}],"\n","                   ","}"}]}],"\n","                 ","]"}],",","\n","                 ",RowBox[
+{"ToString","[",RowBox[{"Solve","[",RowBox[{"parsedEqn",","," ","parsedVars"}],"]"}],"]"}]}],"\n","               ","]"}]}],"\n","             ","]"}],",","\n","             ",RowBox[
+{"ToString","[",RowBox[{"N","[",RowBox[{"Solve","[",RowBox[{"parsedEqn",","," ","parsedVars"}],"]"}],"]"}],"]"}]}],"\n","           ","]"}]}]}],"\n","         ","]"}],",","\n","         ","\"\:274c Error: Invalid input or unrecognized format\""}],"\n","       ","]"}]}]}],",","\n","       ",RowBox[
+{"Method"," ","\[Rule]"," ","\"Queued\""}]}],"\n","     ","]"}],",","\n","     ","\n","     ",RowBox[
+{"Button","[",RowBox[{"\"Clear\"",",","\n","       ",RowBox[{RowBox[{"eqn"," ","="," ","\"\""}],";"," ",RowBox[
+{"vars"," ","="," ","\"x\""}],";"," ",RowBox[{"sol"," ","="," ","\"\""}],";"," ",RowBox[
+{"orderInfo"," ","="," ","\"\""}],";"}],",","\n","       ",RowBox[{"Method"," ","\[Rule]"," ","\"Queued\""}]}],"\n","     ","]"}]}],"\n","   ","}"}],"]"}],",","\n","   ","\n","   ",RowBox[
+{"Style","[",RowBox[{"\"Equation Order:\"",","," ","Bold"}],"]"}],",","\n","   ",RowBox[
+{"Panel","@",RowBox[{"Dynamic","[","orderInfo","]"}]}],",","\n","   ","\n","   ",RowBox[
+{"Style","[",RowBox[{"\"Result:\"",","," ","Bold"}],"]"}],",","\n","   ",RowBox[{"Panel","@",RowBox[
+{"Dynamic","[","sol","]"}]}],",","\n","   ","\n","   ",RowBox[{"Dynamic","[","\n","     ",RowBox[
+{"If","[",RowBox[{RowBox[{"plotToggle"," ","&&"," ",RowBox[{"solveType"," ","==="," ","\"Symbolic\""}]}],",","\n","       ",RowBox[
+{"Module","[",RowBox[{RowBox[{"{",RowBox[{"parsedEqn",","," ","parsedVars"}],"}"}],",","\n","         ",RowBox[
+{RowBox[{"parsedEqn"," ","="," ",RowBox[{"Quiet","@",RowBox[{"Check","[",RowBox[{RowBox[
+{"ToExpression","[",RowBox[{"\"{\""," ","<>"," ","eqn"," ","<>"," ","\"}\""}],"]"}],","," ","$Failed"}],"]"}]}]}],";","\n","         ",RowBox[
+{"parsedVars"," ","="," ",RowBox[{"Quiet","@",RowBox[{"Check","[",RowBox[{RowBox[
+{"ToExpression","[","vars","]"}],","," ","$Failed"}],"]"}]}]}],";","\n","         ",RowBox[
+{"If","[",RowBox[{RowBox[{RowBox[{"ListQ","[","parsedEqn","]"}]," ","&&"," ",RowBox[
+{RowBox[{"Length","[","parsedEqn","]"}]," ","=="," ","1"}]," ","&&"," ",RowBox[{"AtomQ","[","parsedVars","]"}]}],",","\n","           ",RowBox[
+{"Plot","[","\n","             ",RowBox[{RowBox[{"Evaluate","[",RowBox[{"parsedEqn","[",RowBox[
+{"[","1","]"}],"]"}],"]"}],",","\n","             ",RowBox[{"{",RowBox[{"parsedVars",","," ",RowBox[
+{"-","10"}],","," ","10"}],"}"}],",","\n","             ",RowBox[{"PlotLabel"," ","\[Rule]"," ","\"Plot of equation\""}],",","\n","             ",RowBox[
+{"AxesLabel"," ","\[Rule]"," ",RowBox[{"{",RowBox[{RowBox[{"ToString","[","parsedVars","]"}],","," ","\"Value\""}],"}"}]}],",","\n","             ",RowBox[
+{"PlotStyle"," ","\[Rule]"," ","Blue"}]}],"\n","           ","]"}],",","\n","           ","\"\""}],"\n","         ","]"}]}]}],"\n","       ","]"}],",","\n","       ","\"\""}],"\n","     ","]"}],"\n","   ","]"}]}],"\n"," ","}"}],"]"}]}]}],"\n","]"}],"\n"}]],
+"Input",CellLabel -> "In[4]:= ",ExpressionUUID -> "b65626cd-da05-4d86-bde9-79fb7f0e6ac6"],Cell[
+BoxData[
+DynamicModuleBox[{Set[eqn$$,""],Set[vars$$,"x"],Set[sol$$,""],Set[orderInfo$$,""],Set[
+useReduce$$,False],Set[solveType$$,"Symbolic"],Set[showSteps$$,False],Set[plotToggle$$,
+False]},TagBox[GridBox[{{StyleBox["\"\|01f4d0 Aashish Tharu Gamuwa Ultimate Equation Solver\"",
+Bold,16,RGBColor[0,0,1],StripOnInput -> False]},{StyleBox["\"Department of Sciences Quantum University Roorkee, Uttarakhand, India\"",
+Bold,16,RGBColor[0,0,1],StripOnInput -> False]},{TemplateBox[{"\"Equation(s): \"",InputFieldBox[
+Dynamic[eqn$$],String,FieldHint -> "e.g. x^2 + y == 1, x - y == 0",ImageSize -> 400]},
+"RowDefault"]},{TemplateBox[{"\"Variable(s) to solve for: \"",InputFieldBox[Dynamic[
+vars$$],String,FieldHint -> "e.g. x or {x, y}",ImageSize -> 200]},"RowDefault"]},{TemplateBox[
+{CheckboxBox[Dynamic[useReduce$$]],"\" Use Reduce\"",TemplateBox[{20},"Spacer1"],PopupMenuBox[
+Dynamic[solveType$$],{"Symbolic" -> "\"Symbolic\"","Numeric" -> "\"Numeric\""}],TemplateBox[
+{20},"Spacer1"],CheckboxBox[Dynamic[showSteps$$]],"\" Show Steps (symbolic only)\"",TemplateBox[
+{20},"Spacer1"],CheckboxBox[Dynamic[plotToggle$$]],"\" Plot (1-var only)\""},"RowDefault"]},{TemplateBox[
+{ButtonBox["\"Solve\"",RuleDelayed[ButtonFunction,Set[sol$$,Quiet[Check[Module[{parsedEqn$,parsedVars$},
+CompoundExpression[Set[parsedEqn$,ToExpression[StringJoin["{",eqn$$,"}"]]],Set[parsedVars$,
+ToExpression[vars$$]],Set[orderInfo$$,getEquationOrder[MapApply[Subtract,parsedEqn$],
+Flatten[{parsedVars$}]]],If[SameQ[solveType$$,"Symbolic"],If[useReduce$$,ToString[
+Reduce[parsedEqn$,parsedVars$]],If[And[showSteps$$,VectorQ[parsedVars$,AtomQ],Equal[
+Length[parsedVars$],1]],ToString[Column[{"Step-by-step simplification:",FullSimplify[
+Equal[Part[parsedEqn$,1],Part[parsedEqn$,2]]]}]],ToString[Solve[parsedEqn$,parsedVars$]]]],
+ToString[N[Solve[parsedEqn$,parsedVars$]]]]]],"\:274c Error: Invalid input or unrecognized format"]]]],
+Method -> "Queued",Appearance -> Automatic,Evaluator -> Automatic],ButtonBox["\"Clear\"",
+RuleDelayed[ButtonFunction,CompoundExpression[Set[eqn$$,""],Set[vars$$,"x"],Set[sol$$,
+""],Set[orderInfo$$,""],Null]],Method -> "Queued",Appearance -> Automatic,Evaluator -> Automatic]},
+"RowDefault"]},{StyleBox["\"Equation Order:\"",Bold,StripOnInput -> False]},{PanelBox[
+DynamicBox[ToBoxes[orderInfo$$,StandardForm]]]},{StyleBox["\"Result:\"",Bold,StripOnInput -> False]},{PanelBox[
+DynamicBox[ToBoxes[sol$$,StandardForm]]]},{DynamicBox[ToBoxes[If[And[plotToggle$$,
+SameQ[solveType$$,"Symbolic"]],Module[{parsedEqn$,parsedVars$},CompoundExpression[
+Set[parsedEqn$,Quiet[Check[ToExpression[StringJoin["{",eqn$$,"}"]],$Failed]]],Set[
+parsedVars$,Quiet[Check[ToExpression[vars$$],$Failed]]],If[And[ListQ[parsedEqn$],
+Equal[Length[parsedEqn$],1],AtomQ[parsedVars$]],Plot[Evaluate[Part[parsedEqn$,1]],
+{parsedVars$,-10,10},PlotLabel -> "Plot of equation",AxesLabel -> {ToString[parsedVars$],"Value"},
+PlotStyle -> Blue],""]]],""],StandardForm]]}},GridBoxAlignment -> {"Columns" -> {{Left}}},
+DefaultBaseStyle -> "Column",GridBoxItemSize -> {"Columns" -> {{Automatic}},"Rows" -> {{Automatic}}}],
+"Column"],RuleDelayed[DynamicModuleValues,{}]],StandardForm],"Output",CellLabel -> "Out[4]= ",
+ExpressionUUID -> "1a5a107a-5ba9-4fca-868a-7c5a9bcc6960"]},Open],ExpressionUUID -> "5d3e0cc1-0677-4a85-9e19-ac23a699417b"]},
+StyleDefinitions -> "Default.nb",FrontEndVersion -> "14.2 for Wolfram Cloud 1.72 (April 27, 2025)"]
