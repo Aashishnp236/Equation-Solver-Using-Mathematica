@@ -1,0 +1,42 @@
+Notebook[{Cell[
+CellGroupData[{Cell[
+BoxData[RowBox[{"DynamicModule[\n {eqn = \"\", vars = \"x\", sol = \"\", orderInfo = \"\", \n  useReduce = False, solveType = \"Symbolic\", \n  showSteps = False, plotToggle = False},\n\n (* Helper function to detect order of equation(s) *)\n getEquationOrder[e_List, v_List] := Module[{orders},\n   orders = Table[\n     Which[\n       PolynomialQ[e[[i]], v],\n         \"Polynomial Order: \" <> \n         ToString[Exponent[e[[i]], v]],\n       True,\n         \"Non-polynomial or mixed equation\"\n     ],\n     {i, Length[e]}\n   ];\n   StringJoin@\n     Riffle[\n       Table[\"Eq\" <> ToString[i] <> \": \" <> orders[[i]], {i, Length[orders]}],\n       \"\\n\"\n     ]\n ];\n\n Column[{\n   Style[\"\|01f4d0 Aashish Tharu Gamuwa Ultimate Equation Solver\", Bold, 16, Blue],\n   Style[\"Department of Sciences Quantum University Roorkee, Uttarakhand, India\", Bold, 16, Blue],\n   \n   Row[{\n     \"Equation(s): \",\n     InputField[Dynamic[eqn], String, \n       FieldHint \[Rule] \"e.g. x^2 + y == 1, x - y == 0\", ImageSize \[Rule] 400]\n   }],\n   \n   Row[{\n     \"Variable(s) to solve for: \",\n     InputField[Dynamic[vars], String, \n       FieldHint \[Rule] \"e.g. x or {x, y}\", ImageSize \[Rule] 200]\n   }],\n   \n   Row[{\n     Checkbox[Dynamic[useReduce]], \" Use Reduce\",\n     Spacer[20],\n     PopupMenu[Dynamic[solveType], {\"Symbolic\", \"Numeric\"}],\n     Spacer[20],\n     Checkbox[Dynamic[showSteps]], \" Show Steps (symbolic only)\",\n     Spacer[20],\n     Checkbox[Dynamic[plotToggle]], \" Plot (1-var only)\"\n   }],\n   \n   Row[{\n     Button[\"Solve\",\n       sol = Quiet@Check[\n         Module[{parsedEqn, parsedVars},\n           parsedEqn = ToExpression[\"{\" <> eqn <> \"}\"];\n           parsedVars = ToExpression[vars];\n\n           (* Get and display equation order *)\n           orderInfo = getEquationOrder[\n             (Subtract @@@ parsedEqn), Flatten[{parsedVars}]\n           ];\n           \n           (* Solve logic *)\n           If[solveType === \"Symbolic\",\n             If[useReduce,\n               ToString[Reduce[parsedEqn, parsedVars]],\n               If[showSteps && VectorQ[parsedVars, AtomQ] && Length[parsedVars] == 1,\n                 ToString[\n                   Column@{\n                     \"Step-by-step simplification:\",\n                     FullSimplify[parsedEqn[[1]] == parsedEqn[[2]]]\n                   }\n                 ],\n                 ToString[Solve[parsedEqn, parsedVars]]\n               ]\n             ],\n             ToString[N[Solve[parsedEqn, parsedVars]]]\n           ]\n         ],\n         \"\:274c Error: Invalid input or unrecognized format\"\n       ],\n       Method \[Rule] \"Queued\"\n     ],\n     \n     Button[\"Clear\",\n       eqn = \"\"; vars = \"x\"; sol = \"\"; orderInfo = \"\";,\n       Method \[Rule] \"Queued\"\n     ]\n   }],\n   \n   Style[\"Equation Order:\", Bold],\n   Panel@Dynamic[orderInfo],\n   \n   Style[\"Result:\", Bold],\n   Panel@Dynamic[sol],\n   \n   Dynamic[\n     If[plotToggle && solveType === \"Symbolic\",\n       Module[{parsedEqn, parsedVars},\n         parsedEqn = Quiet@Check[ToExpression[\"{\" <> eqn <> \"}\"], $Failed];\n         parsedVars = Quiet@Check[ToExpression[vars], $Failed];\n         If[ListQ[parsedEqn] && Length[parsedEqn] == 1 && AtomQ[parsedVars],\n           Plot[\n             Evaluate[parsedEqn[[1]]],\n             {parsedVars, -10, 10},\n             PlotLabel \[Rule] \"Plot of equation\",\n             AxesLabel \[Rule] {ToString[parsedVars], \"Value\"},\n             PlotStyle \[Rule] Blue\n           ],\n           \"\"\n         ]\n       ],\n       \"\"\n     ]\n   ]\n }]\n]"}]],
+"Input",CellLabel -> "In[1]:= ",ExpressionUUID -> "7bf2babc-2a45-4fd5-a6b1-90b5492f1d22"],Cell[
+BoxData[
+DynamicModuleBox[{Set[eqn$$,""],Set[vars$$,"x"],Set[sol$$,""],Set[orderInfo$$,""],Set[
+useReduce$$,True],Set[solveType$$,"Symbolic"],Set[showSteps$$,True],Set[plotToggle$$,
+True]},TagBox[GridBox[{{StyleBox["\"\|01f4d0 Aashish Tharu Gamuwa Ultimate Equation Solver\"",
+Bold,16,RGBColor[0,0,1],StripOnInput -> False]},{StyleBox["\"Department of Sciences Quantum University Roorkee, Uttarakhand, India\"",
+Bold,16,RGBColor[0,0,1],StripOnInput -> False]},{TemplateBox[{"\"Equation(s): \"",InputFieldBox[
+Dynamic[eqn$$],String,FieldHint -> "e.g. x^2 + y == 1, x - y == 0",ImageSize -> 400]},
+"RowDefault"]},{TemplateBox[{"\"Variable(s) to solve for: \"",InputFieldBox[Dynamic[
+vars$$],String,FieldHint -> "e.g. x or {x, y}",ImageSize -> 200]},"RowDefault"]},{TemplateBox[
+{CheckboxBox[Dynamic[useReduce$$]],"\" Use Reduce\"",TemplateBox[{20},"Spacer1"],PopupMenuBox[
+Dynamic[solveType$$],{"Symbolic" -> "\"Symbolic\"","Numeric" -> "\"Numeric\""}],TemplateBox[
+{20},"Spacer1"],CheckboxBox[Dynamic[showSteps$$]],"\" Show Steps (symbolic only)\"",TemplateBox[
+{20},"Spacer1"],CheckboxBox[Dynamic[plotToggle$$]],"\" Plot (1-var only)\""},"RowDefault"]},{TemplateBox[
+{ButtonBox["\"Solve\"",RuleDelayed[ButtonFunction,Set[sol$$,Quiet[Check[Module[{parsedEqn$,parsedVars$},
+CompoundExpression[Set[parsedEqn$,ToExpression[StringJoin["{",eqn$$,"}"]]],Set[parsedVars$,
+ToExpression[vars$$]],Set[orderInfo$$,getEquationOrder[MapApply[Subtract,parsedEqn$],
+Flatten[{parsedVars$}]]],If[SameQ[solveType$$,"Symbolic"],If[useReduce$$,ToString[
+Reduce[parsedEqn$,parsedVars$]],If[And[showSteps$$,VectorQ[parsedVars$,AtomQ],Equal[
+Length[parsedVars$],1]],ToString[Column[{"Step-by-step simplification:",FullSimplify[
+Equal[Part[parsedEqn$,1],Part[parsedEqn$,2]]]}]],ToString[Solve[parsedEqn$,parsedVars$]]]],
+ToString[N[Solve[parsedEqn$,parsedVars$]]]]]],"\:274c Error: Invalid input or unrecognized format"]]]],
+Method -> "Queued",Appearance -> Automatic,Evaluator -> Automatic],ButtonBox["\"Clear\"",
+RuleDelayed[ButtonFunction,CompoundExpression[Set[eqn$$,""],Set[vars$$,"x"],Set[sol$$,
+""],Set[orderInfo$$,""],Null]],Method -> "Queued",Appearance -> Automatic,Evaluator -> Automatic]},
+"RowDefault"]},{StyleBox["\"Equation Order:\"",Bold,StripOnInput -> False]},{PanelBox[
+DynamicBox[ToBoxes[orderInfo$$,StandardForm]]]},{StyleBox["\"Result:\"",Bold,StripOnInput -> False]},{PanelBox[
+DynamicBox[ToBoxes[sol$$,StandardForm]]]},{DynamicBox[ToBoxes[If[And[plotToggle$$,
+SameQ[solveType$$,"Symbolic"]],Module[{parsedEqn$,parsedVars$},CompoundExpression[
+Set[parsedEqn$,Quiet[Check[ToExpression[StringJoin["{",eqn$$,"}"]],$Failed]]],Set[
+parsedVars$,Quiet[Check[ToExpression[vars$$],$Failed]]],If[And[ListQ[parsedEqn$],
+Equal[Length[parsedEqn$],1],AtomQ[parsedVars$]],Plot[Evaluate[Part[parsedEqn$,1]],
+{parsedVars$,-10,10},PlotLabel -> "Plot of equation",AxesLabel -> {ToString[parsedVars$],"Value"},
+PlotStyle -> Blue],""]]],""],StandardForm]]}},GridBoxAlignment -> {"Columns" -> {{Left}}},
+DefaultBaseStyle -> "Column",GridBoxItemSize -> {"Columns" -> {{Automatic}},"Rows" -> {{Automatic}}}],
+"Column"],RuleDelayed[DynamicModuleValues,{}],ExpressionUUID -> "c35155ee-cec8-4039-a6b3-bdba4b7ece5f"],
+StandardForm],"Output",CellLabel -> "Out[1]= ",ExpressionUUID -> "e19b196a-22ea-46bf-8543-e1e42bc876d9"]},
+Open],ExpressionUUID -> "ef7ae344-cb79-44d8-a80a-5dc80d7d7063"]},StyleDefinitions -> "Default.nb",
+FrontEndVersion -> "14.2 for Wolfram Cloud 1.72 (April 27, 2025)"]
